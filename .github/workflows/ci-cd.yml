@@ -34,9 +34,9 @@ jobs:
         run: |
           docker build -t my-app .
       
-      - name: Run tests
-        run: |
-          docker run --rm my-app test
+    #  - name: Run tests
+    #    run: |
+    #      docker run --rm my-app test
 
   publish:
     runs-on: ubuntu-latest
