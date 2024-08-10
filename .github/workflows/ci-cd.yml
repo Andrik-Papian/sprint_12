@@ -1,6 +1,3 @@
-
-
-
 name: CI/CD Pipeline
 
 on:
@@ -33,9 +30,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-
       
-      - name: Build and test
+      - name: Build Docker image
         run: |
           docker build -t my-app .
+      
+      - name: Run tests
+        run: |
           docker run --rm my-app test
 
   publish:
@@ -54,9 +54,12 @@ jobs:
       
       - name: Build Docker image
         run: |
-          docker build -t my-app:${{ github.ref_name }} .
+          # Преобразование тега GitHub в формат Docker
+          TAG=${GITHUB_REF#refs/tags/}
+          docker build -t my-app:${TAG} .
       
       - name: Push Docker image
         run: |
-          docker tag my-app:${{ github.ref_name }} ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.ref_name }}
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${{ github.ref_name }}
+          TAG=${GITHUB_REF#refs/tags/}
+          docker tag my-app:${TAG} ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${TAG}
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${TAG}
