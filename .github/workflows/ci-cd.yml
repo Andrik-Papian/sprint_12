@@ -60,5 +60,10 @@ jobs:
       - name: Push Docker image
         run: |
           TAG=${GITHUB_REF#refs/tags/}
+          echo "TAG: ${TAG}"  # Для отладки
           docker tag my-app:${TAG} ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${TAG}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-app:${TAG}
+      
+      - name: List Docker images
+        run: |
+          docker images
